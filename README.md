@@ -1,7 +1,9 @@
 # bestit/contentful-translation-bundle
 
-[![Total Downloads](https://poser.pugx.org/bestit/contentful-translation-bundle/downloads.png)](https://packagist.org/packages/bestit/contentful-translation-bundle)
-[![Latest Stable Version](https://poser.pugx.org/bestit/contentful-translation-bundle/v/stable.png)](https://packagist.org/packages/bestit/contentful-translation-bundle)
+[![Latest Stable Version](https://poser.pugx.org/bestit/contentful-translation-bundle/v/stable)](https://packagist.org/packages/bestit/contentful-translation-bundle)
+[![Total Downloads](https://poser.pugx.org/bestit/contentful-translation-bundle/downloads)](https://packagist.org/packages/bestit/contentful-translation-bundle)
+[![Latest Unstable Version](https://poser.pugx.org/bestit/contentful-translation-bundle/v/unstable)](https://packagist.org/packages/bestit/contentful-translation-bundle)
+[![License](https://poser.pugx.org/bestit/contentful-translation-bundle/license)](https://packagist.org/packages/bestit/contentful-translation-bundle)
 
 A Translation bundle for loading messages from contentful
 
