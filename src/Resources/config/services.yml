@@ -1,0 +1,5 @@
+services:
+    best_it_contentful_translation.loader.contentful_loader:
+        class: BestIt\ContentfulTranslationBundle\Loader\ContentfulLoader
+        tags:
+            - { name: translation.loader, alias: contentful}
