@@ -23,6 +23,13 @@ class BestItContentfulTranslationExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
+        $container->setAliases([
+           'best_it_contentful_translation.contentful_client' => $config['contentful_client_id'],
+           'best_it_contentful_translation.cache' => $config['cache_id']
+        ]);
+
+        $container->setParameter('best_it_contentful_translation.contentful_mapping', $config['contentful_mapping']);
+
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yml');
     }
