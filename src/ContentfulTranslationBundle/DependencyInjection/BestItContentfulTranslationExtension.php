@@ -24,8 +24,7 @@ class BestItContentfulTranslationExtension extends Extension
         $config = $this->processConfiguration($configuration, $configs);
 
         $container->setAliases([
-           'best_it_contentful_translation.contentful_client' => $config['contentful_client_id'],
-           'best_it_contentful_translation.cache' => $config['cache_id']
+           'best_it_contentful_translation.contentful_client' => $config['contentful_client_id']
         ]);
 
         $container->setParameter('best_it_contentful_translation.contentful_mapping', $config['contentful_mapping']);

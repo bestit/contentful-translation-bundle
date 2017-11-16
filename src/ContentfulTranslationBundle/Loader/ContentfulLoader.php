@@ -2,9 +2,11 @@
 
 namespace BestIt\ContentfulTranslationBundle\Loader;
 
+use BestIt\ContentfulTranslationBundle\Exception\InvalidEntryValueFormatException;
 use Contentful\Delivery\Client;
+use Contentful\Delivery\ContentTypeField;
+use Contentful\Delivery\DynamicEntry;
 use Contentful\Delivery\Query;
-use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\Translation\Loader\LoaderInterface;
 use Symfony\Component\Translation\MessageCatalogue;
 
@@ -24,13 +26,6 @@ class ContentfulLoader implements LoaderInterface
     private $client;
 
     /**
-     * The cache
-     *
-     * @var CacheItemPoolInterface
-     */
-    private $cacheItemPool;
-
-    /**
      * The contentful config array
      *
      * @var array
@@ -41,13 +36,11 @@ class ContentfulLoader implements LoaderInterface
      * ContentfulLoader constructor.
      *
      * @param Client $client
-     * @param CacheItemPoolInterface $cacheItemPool
      * @param array $config
      */
-    public function __construct(Client $client, CacheItemPoolInterface $cacheItemPool, array $config)
+    public function __construct(Client $client, array $config)
     {
         $this->client = $client;
-        $this->cacheItemPool = $cacheItemPool;
         $this->config = $config;
     }
 
@@ -56,16 +49,42 @@ class ContentfulLoader implements LoaderInterface
      */
     public function load($resource, $locale, $domain = 'messages')
     {
-        $messages = ['foo' => 'kirk'];
+        $messages = [];
+        $contentfulLocale = $locale;
 
-        $query = new Query();
-        $query
-            ->setLocale($locale)
+        // We need the full locale
+        if (strpos($locale, '_') === false) {
+            $contentfulLocale = $locale . '_' . strtoupper($locale);
+        }
+
+        // Contentful need another locale format
+        $contentfulLocale = str_replace('_', '-', $contentfulLocale);
+
+        $query = (new Query)
+            ->setLocale($contentfulLocale)
             ->setContentType($this->config['content_type'])
             ->where(sprintf('fields.%s', $this->config['translation_domain']), $domain);
 
-        // TODO: Fetch al entries and add to catalogue
         $result = $this->client->getEntries($query);
+
+        /** @var DynamicEntry $item */
+        foreach ($result as $item) {
+            $fields = $item->getContentType()->getFields();
+            $values = array_map(function (ContentTypeField $field) use ($item) {
+                $entryValue = $item->{'get' . ucfirst($field->getId())}();
+
+                if (!is_string($entryValue)) {
+                    throw new InvalidEntryValueFormatException(sprintf(
+                        'Entry value must be string but is "%s"',
+                        gettype($entryValue)
+                    ));
+                }
+
+                return $entryValue;
+            }, $fields);
+
+            $messages[$values[$this->config['translation_key']]] = $values[$this->config['translation_value']];
+        }
 
         $catalogue = new MessageCatalogue($locale);
         $catalogue->add($messages, $domain);

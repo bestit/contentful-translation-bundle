@@ -47,3 +47,98 @@ class AppKernel extends Kernel
     // ...
 }
 ```
+
+Step 3: Configure the Bundle
+-------------------------
+
+Simple configuration. Here a yaml example:
+
+```yml
+# config.yml
+
+best_it_contentful_translation:
+
+    # Contentful client service ... expect an Client from offical contentful sdk
+    contentful_client_id: 'contentful.delivery.translation_client'                      # Required
+    
+    # Contentful mapping (all optional)
+    contentful_mapping:
+    
+            # Contentful content type id (default: translation)
+            content_type: 'translation'
+            
+            # Contentful field id for the message key (default: translation_key)
+            translation_key: 'translation_key'
+            
+            # Contentful field id for the message value (default: translation_value)
+            translation_value: 'translation_value'
+            
+            # Contentful field id for the message domain (default: translation_domain)
+            translation_domain: 'translation_domain'
+
+```
+
+Step 4: Configure contentful
+-------------------------
+
+You need a translation content type in your contentful space. Just create one and set the field id in your config mapping (see above).
+The content type need three fields: key, value and domain. You can use a localized field as value.
+
+Example configuration as json:
+```json
+{
+  "name": "Übersetzung",
+  "description": "",
+  "displayField": "translation_key",
+  "fields": [
+    {
+      "id": "translation_key",
+      "name": "Schlüssel",
+      "type": "Symbol",
+      "localized": false,
+      "required": true,
+      "validations": [
+        {
+          "unique": true
+        }
+      ],
+      "disabled": false,
+      "omitted": false
+    },
+    {
+      "id": "translation_value",
+      "name": "Text",
+      "type": "Symbol",
+      "localized": true,
+      "required": false,
+      "validations": [],
+      "disabled": false,
+      "omitted": false
+    },
+    {
+      "id": "translation_domain",
+      "name": "Domain",
+      "type": "Symbol",
+      "localized": false,
+      "required": false,
+      "validations": [],
+      "disabled": false,
+      "omitted": false
+    }
+  ],
+  "sys": {
+    //...
+  }
+}
+```
+
+Step 5: Use translations
+-------------------------
+
+The symfony translator expects a translation file. So you have to create a 'contentful' translation file - 
+as you already know it through yml, xml or xliff: `/Resources/translations/messages.de.contentful`
+
+The filename defines the domain and locale as usual in Symfony. 
+The file content can remain empty - the translations are fetched via contentful.
+
+Please note that Symfony cache the translations. So you have to clear the cache after changes in Contentful.
