@@ -3,7 +3,6 @@ services:
         class: BestIt\ContentfulTranslationBundle\Loader\ContentfulLoader
         arguments:
             - '@best_it_contentful_translation.contentful_client'
-            - '@best_it_contentful_translation.cache'
             - '%best_it_contentful_translation.contentful_mapping%'
         tags:
             - { name: translation.loader, alias: contentful}
